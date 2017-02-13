@@ -1,0 +1,31 @@
+{
+  "name": "stockcharts",
+  "version": "1.0.0",
+  "description": "stock charts to dispay daily trading of stocks",
+  "main": "stock.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "SET NODE_ENV=production && webpack -p"
+  },
+  "author": "Linghong Chen",
+  "license": "MIT",
+  "dependencies": {
+    "d3": "^4.5.0",
+    "d3-axis": "^1.0.4",
+    "d3-scale": "^1.0.4",
+    "d3-zoom": "^1.1.1",
+    "jquery": "^3.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-1": "^6.22.0",
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^2.0.0-rc.1",
+    "html-webpack-plugin": "^2.28.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
+  }
+}

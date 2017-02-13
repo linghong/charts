@@ -1,0 +1,4 @@
+/node_modules
+/dist
+/stock.json
+npm-debug.log
