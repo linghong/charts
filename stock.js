@@ -56,6 +56,30 @@ svg.append("text")
       .style("text-anchor", "left")
       .text("Price ($)");      
 
+// Define the div for the tooltip
+var tooltip = d3.select("body").append("div") 
+      .attr("class", "tooltip")       
+      .style("opacity", 0);
+
+var showTooltip = () => {
+    tooltip.transition()    
+        .duration(200)    
+        .style("opacity", .9);
+}
+
+var hideTooltip = () => {
+    tooltip.transition()    
+        .duration(500)    
+        .style("opacity", 0);
+}
+
+var tradeContent = (price, shares, tradeType) => {
+    tooltip.html ("<div>Stock Price: $" + price + "</div><div>Shares: " 
+          + shares + " sh</div><div>Trade Type: " + tradeType + "</div>")
+          .style("left", (d3.event.pageX+ 8) + "px")    
+          .style("top", (d3.event.pageY - 28) + "px");
+}
+
 d3.json("stock.json", (error, data) => {
   if(error) throw error;
 	
@@ -74,5 +98,19 @@ d3.json("stock.json", (error, data) => {
 			} else {
 				return "p-node";
 			}
-		});
+		})
+		.on("mouseover", function(d) {		
+      showTooltip();	
+      tradeContent(d.price/10000, d.shares, d.tradeType);	
+      if(d3.select(this).attr("class")=="e-node"){
+        $(".p-node").hide();
+      } else {
+        $(".e-node").hide();
+      }
+    })					
+    .on("mouseout", function(d) {		
+        hideTooltip();
+        $(".p-node").show();
+        $(".e-node").show();
+    });
 });
