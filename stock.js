@@ -73,6 +73,13 @@ var hideTooltip = () => {
         .style("opacity", 0);
 }
 
+var bidAskContent = (type, price, timeStr) => {
+    tooltip.html("<div>Stock " + type + " Price: $" + price + "</div><div>" 
+        + type + " Time: " + timeStr + " </div>")
+        .style("left", (d3.event.pageX+ 8) + "px")    
+        .style("top", (d3.event.pageY - 28) + "px");
+}
+
 var tradeContent = (price, shares, tradeType) => {
     tooltip.html ("<div>Stock Price: $" + price + "</div><div>Shares: " 
           + shares + " sh</div><div>Trade Type: " + tradeType + "</div>")
@@ -118,7 +125,37 @@ d3.json("stock.json", (error, data) => {
   		.append("path")
       .datum(data.bboList)
      	.attr("fill", "#996633")
-      .attr("d", topArea); 	
+      .attr("d", topArea);
+
+  //for "bid" and "ask" tooltips
+  var node =svg.selectAll("ellipse")
+        .data(data.bboList)
+  
+  node.enter()
+      .append('ellipse')      
+      .attr('cx', (d) => xScale(d.time))
+      .attr('cy', (d) => yScale(d.bid))
+      .attr('rx', 2)
+      .attr('ry', 2)
+      .attr('class', 'bid-node')
+      .on("mouseover", (d) =>{ 
+          showTooltip();   
+          bidAskContent("Bid", d.bid , d.timeStr);
+      })
+      .on("mouseout", (d) => hideTooltip()); 
+
+  node.enter()
+      .append('ellipse')      
+      .attr('cx', (d) => xScale(d.time))
+      .attr('cy', (d) => yScale(d.ask))
+      .attr('rx', 2)
+      .attr('ry', 2)
+      .attr('class', 'ask-node')
+      .on("mouseover", (d) => { 
+          showTooltip();  
+          bidAskContent("Ask", d.ask, d.timeStr);
+      })
+      .on("mouseout", (d) => hideTooltip());   	
   
 	//for trading circles and tooltips
 	var circles =svg.selectAll("circle")
