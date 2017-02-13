@@ -83,6 +83,43 @@ var tradeContent = (price, shares, tradeType) => {
 d3.json("stock.json", (error, data) => {
   if(error) throw error;
 	
+  //for "ask" and "bid" areas
+	var getTime = (timeStr) =>{
+	   var timeArr = timeStr.split(":");	
+		  return parseInt(timeArr[0])+(parseInt(timeArr[1])+parseInt(timeArr[2])/60)/60;
+	};
+
+ 	data.bboList.forEach((d) => {
+      d.time = getTime(d.timeStr);
+      d.bid = + d.bid/10000;
+      d.ask = + d.ask/10000;
+ 	});
+
+	var lowerArea = d3.area()
+    	   .x((d) => xScale(d.time))
+    	   .y0(yScale(22.75))
+    	   .y1((d) => yScale(d.bid));
+  
+  svg.append("g")
+  		.append("path")
+      .datum(data.bboList)
+		  .attr("fill", "#2d8659")
+      .attr("d", lowerArea);	
+	
+	//The charts indicate several spikes around 9:40 AM
+  //After examing the data, we do see such kinds of data spaikes exsited in the json file
+  //For example, {"ask":239900,"bid":233200,"timeStr":"09:43:06.052"}
+  var topArea=d3.area()
+    	   .x((d) => xScale(d.time))
+    	   .y0(yScale(24.0))
+    	   .y1((d) => yScale(d.ask));
+    	
+  svg.append("g")
+  		.append("path")
+      .datum(data.bboList)
+     	.attr("fill", "#996633")
+      .attr("d", topArea); 	
+  
 	//for trading circles and tooltips
 	var circles =svg.selectAll("circle")
 		    .data(data.tradeList)
