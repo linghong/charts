@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require ('html-webpack-plugin');
 
 module.exports={
 	entry: {
-		bundle: './stock.js',
+		bundle: ['./js/stock.js','./js/stock-step-after.js'],
 		vendor: ['jquery', 'd3', 'd3-axis', 'd3-scale', 'd3-zoom']
 	},
 	output: {

@@ -25,18 +25,22 @@ path.domain  {
 	fill: red;
 	opacity: 0.7;
 }
+
 .e-node{
 	fill: black;
 	opacity: 0.7;
 }
+
 .bid-node{
-  fill: #2d8659;
-  opacity: 0;
+  fill: #00b300;
+  opacity: 0.7;
 }
+
 .ask-node{
-  fill: #996633;
-  opacity: 0;
+  fill: #804d00;
+  opacity: 0.7;
 }
+
 div.tooltip { 
     position: absolute;     
     text-align: left;     
@@ -48,4 +52,18 @@ div.tooltip {
     border: 0px;    
     border-radius: 3px;     
     pointer-events: none;     
+}
+
+.line1 {
+  fill: #996633;
+  stroke: #996633;
+  stroke-width: 1px;
+  opacity: 1;
+}
+
+.line2 {
+  fill: #2d8659;
+  stroke: #2d8659;
+  stroke-width: 1px;
+  opacity: 0.6;
 }

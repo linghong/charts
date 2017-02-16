@@ -2,11 +2,11 @@ import * as d3 from 'd3';
 import { scalepoint, scaleLinear } from 'd3-scale';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { zoom } from 'd3-zoom';
-import "./style.css"
+import "../style.css"
 
-var margin={top:40, right:50, bottom:50, left:70}
-var width = $("#stock-charts").width()-margin.left-margin.right;
-var height = 740-margin.left-margin.right;
+var margin={top:40, right:30, bottom:50, left:70}
+var width = $("#stock-step-after").width()-margin.left-margin.right;
+var height = 680-margin.left-margin.right;
 	
 //scale
 var x =d3.scalePoint()
@@ -19,9 +19,9 @@ var xScale = d3.scaleLinear()
 
 var yScale = d3.scaleLinear()
 		  .range([height, 0])      
-      .domain([22.75, 24.0]);
+      .domain([22.7, 24.0]);
 	
-var svg = d3.select("#stock-charts").append("svg")	
+var svg = d3.select("#stock-step-after").append("svg")	
 		  .attr("width", width+margin.left+margin.right)
 		  .attr("height", height+margin.top+margin.bottom)
 		  .append("g")
@@ -102,31 +102,26 @@ d3.json("stock.json", (error, data) => {
       d.ask = + d.ask/10000;
  	});
 
-	var lowerArea = d3.area()
-    	   .x((d) => xScale(d.time))
-    	   .y0(yScale(22.75))
-    	   .y1((d) => yScale(d.bid));
-  
-  svg.append("g")
-  		.append("path")
+// Add the paths with different curves.
+    svg.append("path")
       .datum(data.bboList)
-		  .attr("fill", "#2d8659")
-      .attr("d", lowerArea);	
-	
-	//The charts indicate several spikes around 9:40 AM
-  //After examing the data, we do see such kinds of data spaikes exsited in the json file
-  //For example, {"ask":239900,"bid":233200,"timeStr":"09:43:06.052"}
-  var topArea=d3.area()
-    	   .x((d) => xScale(d.time))
-    	   .y0(yScale(24.0))
-    	   .y1((d) => yScale(d.ask));
-    	
-  svg.append("g")
-  		.append("path")
-      .datum(data.bboList)
-     	.attr("fill", "#996633")
-      .attr("d", topArea);
+      .attr("class", "line1")
+      .style("stroke", "#4d2600")
+      .attr("d", d3.line()
+                   .curve(d3.curveStepAfter)
+                   .x(function(d) {return xScale(d.time); })
+                   .y(function(d) { return yScale(d.ask); })
+               );
 
+svg.append("path")
+      .datum(data.bboList)
+      .attr("class", "line2")
+      .style("stroke", "#003366")
+      .attr("d", d3.line()
+                   .curve(d3.curveStepAfter)
+                   .x(function(d) {return xScale(d.time); })
+                   .y(function(d) { return yScale(d.bid); })
+               );
   //for "bid" and "ask" tooltips
   var node =svg.selectAll("ellipse")
         .data(data.bboList)
@@ -135,8 +130,8 @@ d3.json("stock.json", (error, data) => {
       .append('ellipse')      
       .attr('cx', (d) => xScale(d.time))
       .attr('cy', (d) => yScale(d.bid))
-      .attr('rx', 2)
-      .attr('ry', 2)
+      .attr('rx', 1.8)
+      .attr('ry', 1.8)
       .attr('class', 'bid-node')
       .on("mouseover", (d) =>{ 
           showTooltip();   
@@ -148,8 +143,8 @@ d3.json("stock.json", (error, data) => {
       .append('ellipse')      
       .attr('cx', (d) => xScale(d.time))
       .attr('cy', (d) => yScale(d.ask))
-      .attr('rx', 2)
-      .attr('ry', 2)
+      .attr('rx', 1.8)
+      .attr('ry', 1.8)
       .attr('class', 'ask-node')
       .on("mouseover", (d) => { 
           showTooltip();  
@@ -178,6 +173,7 @@ d3.json("stock.json", (error, data) => {
       tradeContent(d.price/10000, d.shares, d.tradeType);	
       if(d3.select(this).attr("class")=="e-node"){
         $(".p-node").hide();
+        
       } else {
         $(".e-node").hide();
       }
@@ -187,4 +183,5 @@ d3.json("stock.json", (error, data) => {
         $(".p-node").show();
         $(".e-node").show();
     });
+
 });
